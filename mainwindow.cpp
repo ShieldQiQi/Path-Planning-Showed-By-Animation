@@ -2,6 +2,7 @@
 #include "ui_mainwindow.h"
 
 #include "dijkstra.h"
+#include "a_star.h"
 #include <iostream>
 #include <random>
 #include <QPainter>
@@ -11,6 +12,8 @@
 
 #include <QDebug>
 
+#define A_STAR 1
+
 constexpr int n = 21;
 std::vector<std::vector<int>> grid(n, std::vector<int>(n, 0));
 std::vector<std::vector<int>> costGrid(n, std::vector<int>(n, 100000));
@@ -19,6 +22,7 @@ Node goal(7, 20, 0, 0, 0, 0);
 std::vector<Node> path_vector;
 
 Dijkstra new_dijkstra;
+AStar new_a_star;
 PaintWidget* graphWidget;
 
 MainWindow::MainWindow(QWidget *parent)
@@ -57,16 +61,20 @@ MainWindow::MainWindow(QWidget *parent)
     // Store points after algorithm has run
     std::vector<std::vector<int>> main_grid = grid;
 
-    // Resetting grid
-    // Create object for the algorithm
-    // Run algorithm
-    // Print the final grid using the path_vector
-
     //grid = main_grid;
+#ifdef DIJKSTRA
     new_dijkstra.doDijkstra(grid, start, goal);
+#elif defined (A_STAR)
+    new_a_star.a_star(grid, start, goal);
+#elif defined (D_STAR)
+
+#elif defined (RRT)
+
+#elif defined (PRM)
+
+#endif
 
     // use QPainter draw graph on widget
-    // TODO
 //    path_vector = new_dijkstra.closed_list_;
 //    PrintPath(path_vector, start, goal, grid);
 
@@ -75,7 +83,18 @@ MainWindow::MainWindow(QWidget *parent)
 
 void PaintWidget::paintEvent(QPaintEvent *event)
 {
+#ifdef DIJKSTRA
     path_vector = new_dijkstra.closed_list_;
+#elif defined (A_STAR)
+    path_vector = new_a_star.closed_list_;
+#elif defined (D_STAR)
+
+#elif defined (RRT)
+
+#elif defined (PRM)
+
+#endif
+
     PrintPath(path_vector, start, goal, grid);
 
     Q_UNUSED(event);
@@ -94,8 +113,18 @@ void PaintWidget::paintEvent(QPaintEvent *event)
     pen.setWidth(2);
     pen.setBrush(Qt::black);
     painter.setPen(pen);
-    painter.drawText(10,860,"The Dijkstra Algorithm");
 
+#ifdef DIJKSTRA
+    painter.drawText(10,860,"The Dijkstra Algorithm");
+#elif defined (A_STAR)
+    painter.drawText(10,860,"The A-star Algorithm");
+#elif defined (D_STAR)
+
+#elif defined (RRT)
+
+#elif defined (PRM)
+
+#endif
     // draw the graph
     int n = grid.size();
 

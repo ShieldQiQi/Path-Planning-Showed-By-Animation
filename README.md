@@ -8,6 +8,10 @@
 
 # Ⅰ. Dijkstra demo
 
-![demo1](https://github.com/ShieldQiQi/Path-Planning-Showed-By-Animation/blob/main/image/dijkstra.gif)
+<img src="https://github.com/ShieldQiQi/Path-Planning-Showed-By-Animation/blob/main/image/dijkstra.gif" width="420" height="450" alt="A-star demo"/>
 
-# Ⅱ. On-Doing...
+# Ⅱ. A-Star demo
+
+<img src="https://github.com/ShieldQiQi/Path-Planning-Showed-By-Animation/blob/main/image/A-star.gif" width="420" height="450" alt="A-star demo"/>
+
+# Ⅲ . On-Doing...

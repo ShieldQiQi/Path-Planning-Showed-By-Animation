@@ -16,7 +16,6 @@ using namespace std;
 extern std::vector<std::vector<int>> grid;
 extern std::vector<std::vector<int>> costGrid;
 extern Dijkstra new_dijkstra;
-//extern PaintWidget* graphWidget;
 extern MainWindow *w;
 
 void CALLBACK TimerProc(HWND hWnd, UINT nMsg, UINT nTimerid, DWORD dwTime)
@@ -73,9 +72,13 @@ void CALLBACK TimerProc(HWND hWnd, UINT nMsg, UINT nTimerid, DWORD dwTime)
                 // push all the mearsured node into a priority queue which the minist-cost one will be in the top
                 if(costGrid[new_point.x_][new_point.y_]>new_point.cost_)
                 {
+                    // check the new_point if is already in open_list_
+                    // if new_point in open_list then
                     new_dijkstra.open_list_.push(new_point);
                     grid[new_point.x_][new_point.y_] = 2;
                     costGrid[new_point.x_][new_point.y_] = new_point.cost_;
+                    // otherwise, update the cost of the previus one
+                    // Todo, not a serious problem, but would be better if is done
                 }
             }
             new_dijkstra.closed_list_.push_back(current);
@@ -173,39 +176,3 @@ std::vector<Node> Dijkstra::doDijkstra(std::vector<std::vector<int>>& grid,
 //    closed_list_.push_back(no_path_node);
     return closed_list_;
 }
-
-#ifdef BUILD_INDIVIDUAL
-/**
- * @brief Script main function. Generates start and end nodes as well as grid,
- * then creates the algorithm object and calls the main algorithm function.
- * @return 0
- */
-int main() {
-  int n = 11;
-
-  std::vector<std::vector<int>> grid(n, std::vector<int>(n));
-  MakeGrid(grid);
-  std::random_device rd;   // obtain a random number from hardware
-  std::mt19937 eng(rd());  // seed the generator
-  std::uniform_int_distribution<int> distr(0, n - 1);  // define the range
-
-  Node start(distr(eng), distr(eng), 0, 0, 0, 0);
-  Node goal(distr(eng), distr(eng), 0, 0, 0, 0);
-
-  start.id_ = start.x_ * n + start.y_;
-  start.pid_ = start.x_ * n + start.y_;
-  goal.id_ = goal.x_ * n + goal.y_;
-  start.h_cost_ = abs(start.x_ - goal.x_) + abs(start.y_ - goal.y_);
-  // Make sure start and goal are not obstacles and their ids are correctly
-  // assigned.
-  grid[start.x_][start.y_] = 0;
-  grid[goal.x_][goal.y_] = 0;
-  PrintGrid(grid);
-
-  Dijkstra new_dijkstra;
-  std::vector<Node> path_vector = new_dijkstra.dijkstra(grid, start, goal);
-  PrintPath(path_vector, start, goal, grid);
-
-  return 0;
-}
-#endif  // BUILD_INDIVIDUAL
