@@ -3,6 +3,8 @@
 
 #include "dijkstra.h"
 #include "a_star.h"
+#include "lpa_star.h"
+#include "rrt.h"
 #include <iostream>
 #include <random>
 #include <QPainter>
@@ -13,17 +15,21 @@
 #include <QDebug>
 
 #define A_STAR 1
+//#define LPA_STAR 1
+//#define RRT_ 1
 
 constexpr int n = 21;
 std::vector<std::vector<int>> grid(n, std::vector<int>(n, 0));
 std::vector<std::vector<int>> costGrid(n, std::vector<int>(n, 100000));
-Node start(20, 0, 0, 0, 0, 0);
-Node goal(7, 20, 0, 0, 0, 0);
+Node start(10, 10, 0, 0, 0, 0);
+Node goal(2, 20, 0, 0, 0, 0);
 std::vector<Node> path_vector;
 
 Dijkstra new_dijkstra;
 AStar new_a_star;
 PaintWidget* graphWidget;
+LPAStar new_lpa_star;
+RRT new_rrt;
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
@@ -44,7 +50,6 @@ MainWindow::MainWindow(QWidget *parent)
 //    std::random_device rd;   // obtain a random number from hardware
 //    std::mt19937 eng(rd());  // seed the generator
 //    std::uniform_int_distribution<int> distr(0, n - 1);  // define the range
-
 //    Node start(distr(eng), distr(eng), 0, 0, 0, 0);
 //    Node goal(distr(eng), distr(eng), 0, 0, 0, 0);
 
@@ -61,15 +66,23 @@ MainWindow::MainWindow(QWidget *parent)
     // Store points after algorithm has run
     std::vector<std::vector<int>> main_grid = grid;
 
+    // Variables for RRT and RRTStar
+    constexpr double threshold = 2;
+    constexpr int max_iter_x_factor = 20;
+
     //grid = main_grid;
 #ifdef DIJKSTRA
     new_dijkstra.doDijkstra(grid, start, goal);
 #elif defined (A_STAR)
     new_a_star.a_star(grid, start, goal);
-#elif defined (D_STAR)
 
-#elif defined (RRT)
+#elif defined (LPA_STAR)
+    path_vector.clear();
+    new_lpa_star.lpa_star(grid, start, goal, n, true);
+#elif defined (D_STAR_LITE)
 
+#elif defined (RRT_)
+    path_vector = new_rrt.rrt(grid, start, goal, max_iter_x_factor, threshold);
 #elif defined (PRM)
 
 #endif
@@ -87,9 +100,11 @@ void PaintWidget::paintEvent(QPaintEvent *event)
     path_vector = new_dijkstra.closed_list_;
 #elif defined (A_STAR)
     path_vector = new_a_star.closed_list_;
-#elif defined (D_STAR)
+#elif defined (LPA_STAR)
+    path_vector = new_lpa_star.path_vector_;
+#elif defined (D_STAR_LITE)
 
-#elif defined (RRT)
+#elif defined (RRT_)
 
 #elif defined (PRM)
 
@@ -118,11 +133,14 @@ void PaintWidget::paintEvent(QPaintEvent *event)
     painter.drawText(10,860,"The Dijkstra Algorithm");
 #elif defined (A_STAR)
     painter.drawText(10,860,"The A-star Algorithm");
-#elif defined (D_STAR)
-
-#elif defined (RRT)
-
+#elif defined (LPA_STAR)
+    painter.drawText(10,860,"The LPA-star Algorithm");
+#elif defined (D_STAR_LITE)
+    painter.drawText(10,860,"The D_STAR_LITE Algorithm");
+#elif defined (RRT_)
+    painter.drawText(10,860,"The RRT Algorithm");
 #elif defined (PRM)
+    painter.drawText(10,860,"The PRM Algorithm");
 
 #endif
     // draw the graph

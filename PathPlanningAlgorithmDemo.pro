@@ -17,15 +17,23 @@ DEFINES += QT_DEPRECATED_WARNINGS
 
 SOURCES += \
     a_star.cpp \
+    d_star_lite.cpp \
     dijkstra.cpp \
+    lpa_star.cpp \
     main.cpp \
     mainwindow.cpp \
+    rrt.cpp \
+    rrt_star.cpp \
     utils/utils.cpp
 
 HEADERS += \
     a_star.h \
+    d_star_lite.h \
     dijkstra.h \
+    lpa_star.h \
     mainwindow.h \
+    rrt.h \
+    rrt_star.h \
     utils/utils.hpp
 
 FORMS += \
